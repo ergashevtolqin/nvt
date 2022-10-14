@@ -37,16 +37,11 @@ class KnowledgeController extends Controller
     {
         $request->validate([
             'knowledge'=>'required',
-            'knowledge_number'=>'required',
-            'knowledge_step'=>'required',
-
         ]);
 
         $data = $request->all();
         $new_knowledge = new Knowledge([
             'name' => $data['knowledge'],
-            'number' => $data['knowledge_number'],
-            'step' => $data['knowledge_step'],
             'created_at' => date_now(),
         ]);
         $new_knowledge->save();
@@ -92,14 +87,10 @@ class KnowledgeController extends Controller
     {
         $request->validate([
             'knowledge'=>'required',
-            'knowledge_number'=>'required',
-            'knowledge_step'=>'required',
         ]);
         $data = $request->all();
         $update_knowledge = Knowledge::where('id',$id)->update([
             'name' => $data['knowledge'],
-            'number' => $data['knowledge_number'],
-            'step' => $data['knowledge_step'],
             'updated_at' => date_now(),
         ]);
 

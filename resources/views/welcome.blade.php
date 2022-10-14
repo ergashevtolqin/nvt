@@ -3,9 +3,9 @@
 <div class="content mt-1 main-wrapper">
    <div class="row gold-box">
       @include('admin.components.logo')
-  
+
         <div class="card flex-fill">
-         
+
           <div class="btn-group mr-5 ml-auto">
             <div class="row">
                <div class="col-md-12" align="center">
@@ -26,7 +26,9 @@
           </div>
        </div>
       </div>
-    
+
+
+
 
 <div class="content headbot">
     <div class="row">
@@ -34,14 +36,23 @@
           <div class="card">
              <div class="card-body">
                 <div class="text-center">
-                   <img src="{{$elchi->image_url}}" style="border-radius:50%" height="200px">
+                   <img src="{{asset('assets/img/'.$elchi->image)}}" style="border-radius:50%" height="200px">
                    <h4>{{$elchi->last_name}} {{$elchi->first_name}} </h4>
                    <h5> <button type="button" class="btn btn-info" onclick="collapseGrade()">Ichki reyting {{number_format($allavg,2)}}</button> </h5>
                    <h5> <button type="button" class="btn btn-info" onclick="collapseGrade2()">Tashqi reyting {{number_format($altgardes,2)}}</button> </h5>
+                    @if($plan)
+                        <h5> <a href="{{route('plan.edit',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Planni Tahrirlash</a> </h5>
+                        <h5> <a href="{{route('plan.show',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Planni Ko'rish</a> </h5>
+                    @else
+                        <h5> <a href="{{route('plan',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Plan Qo'shish</a> </h5>
+                        <h5> <a href="{{route('plan.show',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Sotilgan mahsulot</a> </h5>
+
+                    @endif
                 </div>
              </div>
           </div>
        </div>
+
        <div class="col-12 col-xl-8 d-flex flex-wrap">
           <div class="card">
              <div class="card-body pb-0" style="margin-top: 35px;">
@@ -70,7 +81,7 @@
                         <span class="ml-auto">{{date('Y',(strtotime ( today()) )) - date('Y',(strtotime ( $elchi->birthday) ))}}</span>
                      </div>
 
-                      
+
                       <div>
                          <h6>Viloyat</h6>
                          <span class="ml-auto">{{$elchi->v_name}} </span>
@@ -85,6 +96,82 @@
           </div>
        </div>
     </div>
+
+
+    <div class="row d-flex justify-content-between p-5"  id="catid">
+                @if($plan)
+                    @php $t=0;  @endphp
+
+                    @foreach($ps[0]->planweek as $pw)
+
+        <div onclick="show_week(`{{substr($pw->startday,8)}}`)" class="container btn col-12 col-md-6 col-lg-3 d-flex flex-wrap delcat">
+            <div style="border-radius:26px;" class="card detail-box13">
+                <div class="card-body"><div class="dash-contetnt">
+                        <h2 style="color:#ffffff;text-align:center;font-size:20px;font-family:Gilroy;">
+                            <span>{{$numbers[$t]}}</span>/
+                            <span>{{$allweekplan[$t]}}</span>
+                        </h2>
+                        <h1 style="color:#ffffff;text-align:center;margin-left:0px;">
+                            <span title="5.203.100">
+                                <span class="numberkm">{{substr($pw->startday,8)}}</span>
+                                <span style="width: 2px; height: 15px;"><img style="color: white; height: 15px; width: 40px;" src="{{asset('assets/img/transparent-bg-designify.png')}}"></span>
+                                <span class="numberkm">{{substr($pw->endday,8)}}</span>
+                            </span>
+                        </h1>
+{{--                        <h6 style="margin-top:-10px;">--}}
+{{--                            <span style="text-align:left;">--}}
+{{--                                <span style="font-family:Gilroy;color:#f34539;">-85.84% </span>--}}
+{{--                                <i class="fas fa-arrow-down mr-1" style="color:#f34539;"></i>--}}
+{{--                            </span>--}}
+{{--                        </h6>--}}
+                    </div>
+                </div>
+            </div>
+        </div>
+                @php $t++; @endphp
+            @endforeach
+        @endif
+    </div>
+
+
+
+
+
+
+    <div class="row d-flex justify-content-between p-2">
+        @if($plan)
+
+            <table class="table table-striped plan">
+                <thead class="plan">
+                <tr class="plan" style="display: none">
+                    <th scope="col">#</th>
+                    <th scope="col">Dori nomi</th>
+                    <th scope="col">Sotildi</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                @php $t=0;  @endphp
+
+                @foreach($ps[0]->planweek as $pw)
+                @foreach($plan_product as $p)
+                    @if($pw->startday==$p['begin'])
+
+                        {{--                    @if($start)--}}
+                    <tr style="display: none" class="alldatebegin plan{{substr($pw->startday,8)}}">
+                        <td>{{$loop->index+1}}</td>
+                        <td>{{$p['name']}}</td>
+                        <td>{{$p['count']}}/{{$p['plan']}}</td>
+                    </tr>
+                    @endif
+                @endforeach
+
+                @php $t++; @endphp
+                @endforeach
+                </tbody>
+            </table>
+        @endif
+    </div>
     <div class="row" id="forcollapsegrade" style="display: none;">
       <div class="col-12 col-md-12 col-lg-12 d-flex flex-wrap">
             <div class="card bg-white">
@@ -96,35 +183,7 @@
                @foreach ($d_array as $key => $item)
                   <li class="nav-item"><a class="nav-link @if($key == 0) active @endif" href="#solid-justified-tab{{$key+1}}" data-toggle="tab">{{ $item['name'] }} ({{$item['avg']}})</a></li>
                @endforeach
-               @php
-               $i = 0;
-               $avgs = 0;
-               foreach ($pill_array as $key => $item)
-                  {$i++;
-                  $avgs += $item['avg'];}
-               // @endforeach
-               foreach ($step_array as $key => $item)
-                 { $i++;
-                  if($item['count'] == 0)
-                  {
-                     $avgs += 0;
-                  }else{
-                     $avgs += $item['avg']/$item['count'];
-                  }
-                  
-               }
-               if($i == 0)
-                  {
-                     $all_avgs = 0;
-                  }else{
-                     $all_avgs = number_format($avgs/$i,2);
-
-                  }
-               @endphp
-            <li class="nav-item"><a class="nav-link" href="#solid-justified-tab-bilim" data-toggle="tab">Bilim 
-               ({{$all_avgs}})
-            </a>
-            </li>
+            {{-- <li class="nav-item"><a class="nav-link" href="#solid-justified-tab2" data-toggle="tab">Profile </a></li> --}}
             {{-- <li class="nav-item"><a class="nav-link" href="#solid-justified-tab3" data-toggle="tab">Messages </a></li> --}}
             </ul>
             <div class="tab-content">
@@ -132,13 +191,13 @@
 
                <div class="tab-pane show @if($key==0) active @endif" id="solid-justified-tab{{$key+1}}">
                   <div class="tab-left">
-                  
+
                      @foreach ($d_for_user as $ite)
                      @if($ite['depid'] == $item['id'])
                      <div class="d-flex mb-3">
                         <div class="medicne d-flex">
                            <a style="cursor: pointer" onclick="getQuestion(`qd{{$ite['uid']}}{{$item['id']}}`)"> {{$ite['username']}}</a>
-                          
+
                         </div>
                         <div class="medicne-time ml-auto">
                            {{$ite['avg']}}
@@ -146,7 +205,7 @@
                      </div>
                      @endif
                      @endforeach
-                     
+
                   </div>
                   @foreach ($allquestion as $ite)
 
@@ -164,7 +223,7 @@
                         </div>
                      </div>
                      @endif
-                     
+
                   </div>
                   @endforeach
 
@@ -237,7 +296,7 @@
 
    </div>
    <div class="row" id="forcollapsegrade2" style="display: none;">
-      
+
       <div class="col-12 col-md-12 col-lg-12 d-flex flex-wrap">
             <div class="card bg-white">
             <div class="card-body">
@@ -247,7 +306,7 @@
                   <span class="badge">{{$item['count']}}</span>
                 </button>
                @endforeach
-               
+
             </div>
             </div>
       </div>
@@ -273,10 +332,10 @@
                   '/mobile/i'  => 'Safari Browser',
                );
 
-               
+
             @endphp
                <h4> <span> </span> </h4>
-               
+
                      <div class="table-responsive">
                         <table class="table mb-0" id="dtBasicExample">
                            <thead>
@@ -309,7 +368,7 @@
                            </tbody>
                         </table>
                      </div>
-            
+
          </div>
          </div>
    </div>
@@ -318,7 +377,7 @@
     <div class="row">
       <div class="col-12 col-md-12 col-lg-12 d-flex flex-wrap" onclick="tabNone('solid-tab1')"
       onmouseover="$(this)
-       .css('cursor','pointer')"  
+       .css('cursor','pointer')"
       >
          <div class="card" style="background-color: #3b3d83">
             <div class="card-body">
@@ -334,7 +393,7 @@
       @foreach ($cateory as $key => $item)
        <div class="col-12 col-md-6 col-lg-3 d-flex flex-wrap nav-link solid-tab{{$i}} dborder" onclick="tabNone('solid-tab{{$i}}')"
        onmouseover="$(this)
-       .css('cursor','pointer')" 
+       .css('cursor','pointer')"
       style="border-bottom: 3px solid #3b3d83"
 
        >
@@ -347,9 +406,9 @@
             </div>
          </div>
       </div>
-       
+
        @php $i = $i + 1 @endphp
-      
+
 
 
       @endforeach
@@ -439,7 +498,7 @@
                                  </div>
                               </div>
                            </div>
-                            
+
                         {{-- </div> --}}
                      </div>
                     @foreach ($cateory as $key => $item)
@@ -475,7 +534,7 @@
                                                  $t += $mitem['number']
                                              @endphp
                                                 @endif
-                                               
+
                                             @endforeach
                                             {{-- <tr>
                                                 <td>Jami</td>
@@ -499,57 +558,29 @@
                </div>
             </div>
          </div>
-         
     </div>
 </div>
-<div class="row align-items-center justify-content-center">
-@foreach ($pill_array as $item)
-
-   <div class="col-12 col-md-6 col-lg-4 d-flex flex-wrap delregion">
-      <div class="card detail-box1">
-         <div class="card-body">
-         <div class="dash-contetnt">
-            <h2 style="color:#05f705;text-align:center;">{{$item['name']}}</h2>
-            <h3 style="color:#ffffff;text-align:center;margin-left:12px;">
-            <span title="0">{{$item['avg']}}</span>
-            </h3>
-         </div>
-         </div>
-      </div>
-   </div>
-@endforeach
-
-
-</div>
-<div class="row align-items-center justify-content-center">
-
-@foreach ($step_array as $item)
-
-   <div class="col-12 col-md-4 col-lg-3 d-flex flex-wrap delregion">
-      <div class="card detail-box1">
-         <div class="card-body">
-         <div class="dash-contetnt">
-            <h2 style="color:#05f705;text-align:center;">{{$item['name']}}</h2>
-            <h3 style="color:#ffffff;text-align:center;margin-left:12px;">
-            <span title="0">{{ number_format($item['avg']/$item['count'],2) }} </span>
-            </h3>
-         </div>
-         </div>
-      </div>
-   </div>
-@endforeach
-</div>
-
 </div>
 @endsection
 @section('admin_script')
    <script>
+
+       function show_week(id)
+       {
+           $('.alldatebegin').css('display','none');
+           $(`.plan${id}`).css('display','');
+           $(`.plan`).css('display','');
+
+       }
+
+
+
       function getQuestion(id)
       {
          $('.allqd').css('display','none')
          // alert(id)
          $(`.${id}`).css('display','')
-         
+
       }
        function collapseGrade()
     {
@@ -590,7 +621,7 @@ var id = <?php echo json_encode($elchi->id); ?>;
        .css('border-left','none')
        .css('border-right','none')
        .css('border-bottom','3px solid #3b3d83');
-       
+
          $(`.${tab}`).css('border-top','3px solid #3b3d83')
        .css('border-left','3px solid #3b3d83')
        .css('border-top-left-radius','30px')
@@ -617,7 +648,7 @@ var id = <?php echo json_encode($elchi->id); ?>;
          // $('#age_button2').click()
          $('#aftertime').after(`<a href='{{route('elchi',['id' => $elchi->id,'time' => 'week'])}}' class='dropdown-item'>Hammasi</a>`)
 
-         // region(date1);    
+         // region(date1);
 
       }
    </script>

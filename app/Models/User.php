@@ -59,4 +59,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Branch::class,'branch_id','id');
     }
+
+
+    public function plans()
+    {
+        return $this->hasMany(Plan::class);
+    }
 }

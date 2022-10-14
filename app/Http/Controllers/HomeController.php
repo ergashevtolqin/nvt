@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\UserSystemInfo;
+use App\Models\Plan;
+use App\Models\PlanWeek;
+use App\Models\ProductSold;
+use App\Services\PlanHomeControllerService;
+use App\Services\Sold;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 // use Illuminate\Http\Patient;
@@ -11,11 +16,7 @@ use App\Models\Patient;
 use App\Models\Position;
 use App\Models\Pill;
 use App\Models\Question;
-use App\Models\Knowledge;
-use App\Models\PillQuestion;
-use App\Models\UserQuestion;
-use App\Models\ConditionQuestion;
-use App\Models\KnowledgeQuestion;
+use App\Models\Region;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Cache;
@@ -29,7 +30,7 @@ use Storage;
 use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Arr;
+use function PHPUnit\Framework\isEmpty;
 
 class HomeController extends Controller
 {
@@ -84,15 +85,15 @@ class HomeController extends Controller
         //     'phone' => $phone,
         //     'message' => $message,
         // ];
-        
+
         // $ch = curl_init('https://api.smsfly.uz/send');
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
         // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        
+
         // // execute!
         // $response = curl_exec($ch);
-        
+
         // curl_close($ch);
 
         // return [
@@ -104,7 +105,7 @@ class HomeController extends Controller
         // dd($request);
         // \File::delete(public_path() . '/assets/img/'.$getimg);
         // $id =2;
-            
+
         $pharmacy = Pharmacy::all();
         // foreach($pharmacy as $item)
         // {
@@ -150,7 +151,7 @@ class HomeController extends Controller
         $user = DB::table('tg_productssold')
         ->selectRaw('SUM(tg_productssold.number * tg_medicine.price) as allprice,SUM(tg_productssold.number) as allnumber,tg_medicine.name,tg_medicine.price');
         $search = $user->join('tg_medicine','tg_medicine.id','tg_productssold.medicine_id');
-               
+
         // $search = $user->addSelect(DB::raw('count(*) as last'));
 
         $search = $user->groupBy('tg_medicine.name','tg_medicine.price')->get();
@@ -169,7 +170,7 @@ class HomeController extends Controller
         // ->where('department_id',DB::table('tg_department')->where('name','Bilim')->where('status',1)->first()->id)
         // ->delete();
         // DB::table('tg_department')->where('name','Bilim')->where('status',1)->delete();
-        
+
         // $deparid = DB::table('tg_productssold')->where('order_id',720)->update([
         //     'number' => 1
         // ]);
@@ -188,6 +189,7 @@ class HomeController extends Controller
 
         // $regions = Question::with('pill')->get();
         // return $regions;
+<<<<<<< HEAD
         // $array = [1, 2, 3, 4, 5];
         // $pluck_id = PillQuestion::where('knowledge_id',3)->pluck('id');
  
@@ -375,6 +377,8 @@ class HomeController extends Controller
         // return $step1_user;
         // var_dump($pluck_id);
         // die();
+=======
+>>>>>>> 65671284355c0c6e24ef68baf35c9892b52b14d4
 
         $regions = DB::table('tg_region')->get();
 
@@ -434,28 +438,28 @@ class HomeController extends Controller
     }
     public function elchi($id,$time)
     {
-        // $getimg = DB::table('tg_user')->where('id',$id)->value('image');
-        // $img = DB::table('tg_user')->where('id',$id)->value('image_change');
-        // if($img)
-        // {
-        //     \File::delete(public_path() . '/assets/img/'.$getimg);
-        //     $response = Http::get('http://128.199.2.165:8100/api/v1/user/image/'.$id);
-        //     $url = $response['image'];
-        //     $contents = file_get_contents($url);
-        //     $name = substr($url, strrpos($url, '/') + 1);
-        //     Storage::disk('public_uploads')->put($name, $contents);
-        //     $update = DB::table('tg_user')->where('id',$id)->update([
-        //         'image_change' => FALSE
-        //     ]);
-        // }
+        $getimg = DB::table('tg_user')->where('id',$id)->value('image');
+        $img = DB::table('tg_user')->where('id',$id)->value('image_change');
+        if($img)
+        {
+            \File::delete(public_path() . '/assets/img/'.$getimg);
+            $response = Http::get('http://128.199.2.165:8100/api/v1/user/image/'.$id);
+            $url = $response['image'];
+            $contents = file_get_contents($url);
+            $name = substr($url, strrpos($url, '/') + 1);
+            Storage::disk('public_uploads')->put($name, $contents);
+            $update = DB::table('tg_user')->where('id',$id)->update([
+                'image_change' => FALSE
+            ]);
+        }
         // // return substr($getimg,6);
         // return $getimg;
         // $exists = Storage::disk('public_uploads')->exists(substr($getimg,6));
         // // return $exists;
         // if(!$exists) {
-            
+
         // }
-        
+
 
         if ($time == 'today') {
             $date_begin = today();
@@ -487,10 +491,10 @@ class HomeController extends Controller
             $date_end = substr($time,11);
             $dateText = date('d.m.Y',(strtotime ( $date_begin ) )).'-'.date('d.m.Y',(strtotime ( $date_end ) ));
 
-        }  
+        }
         // return  substr("$time",0,10);
         $elchi = DB::table('tg_user')->where('tg_user.id',$id)
-        ->select('tg_user.image_url','tg_specialty.name as lv','tg_user.id','tg_user.tg_id','tg_user.username','tg_user.birthday','tg_user.phone_number','tg_user.first_name','tg_user.last_name','tg_region.name as v_name','tg_district.name as d_name')
+        ->select('tg_user.image','tg_specialty.name as lv','tg_user.id','tg_user.tg_id','tg_user.username','tg_user.birthday','tg_user.phone_number','tg_user.first_name','tg_user.last_name','tg_region.name as v_name','tg_district.name as d_name')
         ->join('tg_region','tg_region.id','tg_user.region_id')
         ->join('tg_district','tg_district.id','tg_user.district_id')
         ->join('tg_specialty','tg_specialty.id','tg_user.specialty_id')
@@ -524,7 +528,7 @@ class HomeController extends Controller
             foreach ($medicine_cate as $mkey => $med) {
 
                 $medicineall[$mkey] = array('price' => 0,'number' => 0, 'name' => $med->m_name,'cid'=>$med->c_id);
-                
+
 
             }
             foreach ($medicine_cate as $mkey => $med) {
@@ -578,7 +582,7 @@ class HomeController extends Controller
                     $catesum = 0;
 
             }
-           
+
             if(count($cateory) == 0)
             {
                 foreach ($category as $key => $value) {
@@ -628,7 +632,7 @@ class HomeController extends Controller
             foreach($department as $depar)
             {
         $question = DB::table('tg_question')->where('department_id',$depar->id)->get();
-        
+
 
         foreach($users as $dnam)
         {
@@ -704,13 +708,13 @@ class HomeController extends Controller
         $d_array[] = array('id'=>$depar->id,'name' => $depar->name,'avg' => number_format($allsavguser, 2));
         $d_for_user2 = [];
 
-        
+
 
         }
         $davg = 0;
         $maxnol = 0;
         foreach($d_array as $dr)
-        {   
+        {
             if($dr['avg'] > 0)
             {
                 $maxnol +=1;
@@ -722,7 +726,7 @@ class HomeController extends Controller
             $allavg =0;
         }else{
 
-        
+
         $allavg = $davg/$maxnol;
         }
 
@@ -745,7 +749,7 @@ class HomeController extends Controller
             if(count($tashqi) != 0)
             {
 
-            
+
             foreach($tashqi as $tq)
             {
                 if($cl == $tq->teacher_id)
@@ -755,12 +759,12 @@ class HomeController extends Controller
             }
 
                 $altgarde += $tgrade/count($tashqi);
-            
+
             }else{
                 $altgarde += 0;
 
             }
-            
+
         }
 
         if(count($client) == 0)
@@ -793,10 +797,13 @@ class HomeController extends Controller
         // ->select('tg_cgrade.grade as grade','tg_cgrade.created_at as cat','tg_client.device as device','tg_cgrade')
         ->join('tg_client','tg_client.id','tg_cgrade.teacher_id')
         ->get();
+        // Birodar codes
+        #region Plan
 
-        $know_grade = DB::table('tg_knowledge_grades')
-        ->where('user_id',$id)->get();
+        $plan=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->exists();
+        $ps=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->with('planweek')->get();
 
+<<<<<<< HEAD
         $knowledges = DB::table('tg_knowledge')->whereIn('step',[1,3])->get();
         $know_teachers = DB::table('tg_knowledge_grades')->distinct()->pluck('teacher_id');
         // return $know_teachers;
@@ -918,7 +925,76 @@ class HomeController extends Controller
                 ->get();
         // return $step_array_grade_all;
         return view('welcome',compact('step_array_grade_all','step3_get','step3_get_user','step_array','pill_array','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
+=======
+        $allplans=0;
+        $allweekplan=[];
+        $numbers=[];
+        for ($s=0;$s<4;$s++){
+            $allweekplan[$s]=0;
+        }
+        if ($plan){
+            foreach ($ps as $p){
+                foreach ($p->planweek as $pw){
+                    $allplans+=$pw->plan;
+                }
+            }
+            $t=0;
+
+            foreach ($ps[0]->planweek as $item){
+                $allweekplan[$t]=0;
+                foreach ($ps as $p){
+                    foreach ($p->planweek as $pw){
+                        if($item->startday==$pw->startday){
+
+                            $allweekplan[$t]+=$pw->plan;
+
+                        }
+                    }
+
+                }
+                $t++;
+            }
+
+            $k=0;
+            $numbers=[];
+
+            foreach ($ps[0]->planweek as $item){
+
+                $solds=ProductSold::where('user_id',$id)->whereBetween('created_at', [$item->startday, $item->endday])->get();
+//                dd($solds);
+                $numbers[$k]=0;
+                $l=0;
+                $sum=0;
+
+                foreach ($solds as $sold){
+
+                    $numbers[$k]+=$sold->number;
+                }
+                $k++;
+            }
+        }
+        $plan_product = [];
+        foreach ($ps as $p){
+//            dd($p);
+            foreach ($p->planweek as $pw){
+//                dd($pw);
+                $count= ProductSold::where('user_id',$id)
+                    ->where('medicine_id',$p->medicine_id)
+                    ->whereBetween('created_at', [$pw->startday, $pw->endday])->sum('number');
+                $name = DB::table('tg_medicine')->where('id',$p->medicine_id)->value('name');
+                if($count != 0)
+                {
+                    $plan_product[] = array('plan' => $p->number,'count' => $count,'name' => $name ,'begin' => $pw->startday, 'end' => $pw->endday );
+                }
+            }
+        }
+
+//        dd($plan_product);
+        #endregion
+        return view('welcome',compact('allweekplan','plan_product','numbers','allplans','ps','plan','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
+>>>>>>> 65671284355c0c6e24ef68baf35c9892b52b14d4
         // return $id;
+        //Birodar codes end
     }
     public function elchiList()
     {
@@ -947,15 +1023,16 @@ class HomeController extends Controller
                     foreach ($users as $key => $value) {
                         $userarrayreg[] = $value->id;
                     }
-            
+
         }
 
         $elchi = DB::table('tg_user')
             ->whereIn('tg_user.id',$userarrayreg)
             ->where('tg_user.admin',FALSE)
-            ->select('tg_user.image_url','tg_user.admin','tg_region.id as rid','tg_region.name as v_name','tg_user.username','tg_user.id','tg_user.last_name','tg_user.first_name')
+            ->select('tg_user.image','tg_user.admin','tg_region.id as rid','tg_region.name as v_name','tg_user.username','tg_user.id','tg_user.last_name','tg_user.first_name')
             ->join('tg_region','tg_region.id','tg_user.region_id')
             ->orderBy('tg_user.admin','DESC')->get();
+
 
         $elchi_work=[];
         $elchi_fact=[];
@@ -990,10 +1067,10 @@ class HomeController extends Controller
         if(isset($date[0]))
         {
 
-        
+
         $all_date=[];
         foreach($cale_date as $key => $value)
-        {   
+        {
             if($value == 'true' && $key <=  date('d',(strtotime ( $date[0] ) )))
             {
                 if (strlen($key) == 1) {
@@ -1014,7 +1091,7 @@ class HomeController extends Controller
             if(date('l',(strtotime ( $d ) )) == 'Sunday')
             {
                 $sunday = $sunday + 1;
-                
+
             }
         }
 
@@ -1022,7 +1099,7 @@ class HomeController extends Controller
         $pr = count($all_date)+$sunday;
         // return $date;
         $elchi_work[$elch->id] = ($cale->work_day+$sunday).'/'.(count($date)).'/'.$pr;
-        
+
                 $user = DB::table('tg_productssold')
                 ->selectRaw('SUM(tg_productssold.number * tg_medicine.price) as allprice,SUM(tg_productssold.number) as allnumber,tg_medicine.name,tg_medicine.price')
                 ->whereIn(DB::raw('DATE(tg_productssold.created_at)'), $date)
@@ -1064,17 +1141,6 @@ class HomeController extends Controller
 
         // return view('elchi');
         return view('elchi',compact('elchi','elchi_work','elchi_fact','elchi_prognoz'));
-    }
-    public function knowGrade(Request $request)
-    {
-        $elchi = DB::table('tg_user')
-            // ->whereIn('tg_user.id',$userarrayreg)
-            ->where('tg_user.admin',FALSE)
-            ->select('tg_user.image','tg_user.admin','tg_region.id as rid','tg_region.name as v_name','tg_user.username','tg_user.id','tg_user.last_name','tg_user.first_name')
-            ->join('tg_region','tg_region.id','tg_user.region_id')
-            ->orderBy('tg_user.admin','DESC')->get();
-
-        return view('elchi-know',compact('elchi'));
     }
     public function userList(Request $request)
     {
@@ -1151,7 +1217,7 @@ class HomeController extends Controller
             $f_date_end = date('Y-m-d',(strtotime ( '-1 day' , strtotime ( substr($time,11)) ) ));
             $dateText = date('d.m.Y',(strtotime ( $date_begin ) )).'-'.date('d.m.Y',(strtotime ( $date_end ) ));
 
-        }  
+        }
         $r_id_array = [];
 
         if(isset(Session::get('per')['region']) && Session::get('per')['region'] == 'true')
@@ -1220,8 +1286,8 @@ class HomeController extends Controller
 
                         $medic[$mkey] = array('mid'=>$one->m_id,'narx'=>$med->price,'price' => $medisum,'number' => $number, 'name' => $med->name,'cid' => $one->c_id,'nol' => 1);
                     }
-                    
-            
+
+
                 }
                     $medisum = 0;
                     $number = 0;
@@ -1266,8 +1332,8 @@ class HomeController extends Controller
 
                         $medic2[$mkey] = array('mid'=>$one->m_id,'narx'=>$med->price,'price' => $medisum,'number' => $number, 'name' => $med->name,'cid' => $one->c_id,'nol' => 1);
                     }
-                    
-            
+
+
                 }
                     $medisum = 0;
                     $number = 0;
@@ -1291,7 +1357,7 @@ class HomeController extends Controller
             //     unset($alls22[$key]->mid);
             // }
             $medic2 = $alls22;
-            
+
         return view('product',compact('medic','medic2','category','dateText'));
     }
     public function userOnlineStatus()
@@ -1359,7 +1425,7 @@ class HomeController extends Controller
         // $text4 = 'Mozilla/5.0 (Linux; Android 12; M2101K7AG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Mobile Safari/537.36';
         // $text3 = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.50';
         // return wordSimilarity($agent, $text4);
-        
+
         $get_agent = DB::table('tg_client')->get();
         $agent_array = [];
         $max=0;
@@ -1414,7 +1480,7 @@ class HomeController extends Controller
         $year = substr($month,3);
         $months = substr($month,0,-5);
         $maxday =  Carbon::now()->year($year)->month($months)->daysInMonth;
-        $dates = []; 
+        $dates = [];
 
         $ym = DB::table('tg_calendar')->where('year_month',$month)->value('day_json');
         // return $ym;
@@ -1448,7 +1514,7 @@ class HomeController extends Controller
         return redirect()->back();
     }
     public function loginSite(Request $request)
-    {   
+    {
         $validated = $request->validate([
             'email' => 'required',
             'password' => 'required|min:8',
@@ -1458,9 +1524,9 @@ class HomeController extends Controller
         // // die();
         // foreach ($schema_name as $key => $value) {
             setSchema('admin');
-           
 
-        
+
+
             if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
                 $user = Auth::user();
             }else{
@@ -1494,7 +1560,7 @@ class HomeController extends Controller
             // // }else{
             //     Session::put('rol', json_decode($schema_row->position_json));
             // // }
-            
+
             setSchemaInConnection();
             $all_patient = DB::table('patients')->count();
     $all_chkb = DB::table('patients')->where('treatment_tip','app.chkb')->count();
@@ -1504,8 +1570,8 @@ class HomeController extends Controller
     $chkb_false = DB::table('patients')->where('death',false)->where('treatment_tip','app.chkb')->count();
         // return view('welcome',compact('all_patient','all_chkb','all_true','chkb_true','all_false','chkb_false'));
         return view('welcome',compact('all_patient','all_chkb','all_true','chkb_true','all_false','chkb_false','user'));
-        
-            
+
+
         }else{ return redirect()->back(); }
             // return $schema_row;
     }
@@ -1572,6 +1638,6 @@ class HomeController extends Controller
         return view('user.login');
     }
 
-    
+
 
 }

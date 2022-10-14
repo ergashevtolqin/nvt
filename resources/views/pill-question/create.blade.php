@@ -14,10 +14,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-2 ichkitashqi">
                                         <select class="form-control form-control-sm" name='knowledge_id'>
-                                                {{-- <option value='{{$knowledge->id}}'>{{$knowledge->name}}</option> --}}
-                                                @foreach ($knowledge as $question)
-                                                    <option value='{{$question->id}}'>{{$question->name}}</option>
-                                                @endforeach
+                                                <option value='{{$knowledge->id}}'>{{$knowledge->name}}</option>
                                         </select>
                                     </div>
                                     <div class="form-group col-md-4">
