@@ -30,8 +30,8 @@
              @endisset
              @isset(Session::get('per')['grade'])
              @if(Session::get('per')['grade'] == 'true')
-             {{-- <li><a href="{{route('grade')}}"><i class="feather-filter"></i>  <span>Baholash </span></a> --}}
-             {{-- </li> --}}
+             <li><a href="{{route('grade')}}"><i class="feather-filter"></i>  <span>Baholash </span></a>
+             </li>
              @endif
              @endisset
 
@@ -49,8 +49,6 @@
                @endif
              @endisset
 
-             @isset(Session::get('per')['know_ques'])
-             @if(Session::get('per')['know_ques'] == 'true')
              <li class="submenu">
                <a href="settings.html"><i class="feather-sliders"></i>  <span> Bilim savollar </span><span class="menu-arrow"></span></a>
                <ul style="display: none;">
@@ -60,32 +58,10 @@
                   <li><a href="{{route('knowledge-question.create')}}">Savollar</a></li>
                </ul>
             </li>
-            @endif
-            @endisset
-
-            @isset(Session::get('per')['know_grade'])
-             @if(Session::get('per')['know_grade'] == 'true')
-            {{-- <li><a href="{{route('know.grade')}}"><i class="feather-filter"></i>  <span>Bilim baholash </span></a> --}}
-            {{-- </li> --}}
-            @endif
-            @endisset
-
-            @isset(Session::get('per')['know_grade'])
-             @if(Session::get('per')['know_grade'] == 'true')
-            <li><a href="{{route('all.grade')}}"><i class="feather-filter"></i>  <span>Baholash </span></a>
-            </li>
-            @endif
-            @endisset
 
              @isset(Session::get('per')['setting'])
              @if(Session::get('per')['setting'] == 'true')
              <li><a href="{{route('setting','09.2022')}}"><i class="feather-filter"></i>  <span>Sozlamalar </span></a>
-             </li>
-             @endif
-             @endisset
-             @isset(Session::get('per')['show_purchase'])
-             @if(Session::get('per')['show_purchase'] == 'true')
-             <li><a href="{{route('purchase.journal')}}"><i class="feather-filter"></i>  <span>Taxrirlash tarixi </span></a>
              </li>
              @endif
              @endisset
