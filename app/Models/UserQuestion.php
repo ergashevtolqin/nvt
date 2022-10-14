@@ -12,12 +12,8 @@ class UserQuestion extends Model
     protected $table = 'tg_user_questions';
     protected $fillable = [
         'id',
-        'user_id',
-        'step1',
-        'step3',
-        'question_step',
-        'created_at',
-        'updated_at',
+        'pill_question_id',
+        'knowledge_question_id',
     ];
 
     // public function condition_question()

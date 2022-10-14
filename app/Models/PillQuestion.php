@@ -20,9 +20,4 @@ class PillQuestion extends Model
     {
         return $this->hasMany(ConditionQuestion::class,'pill_question_id','id');
     }
-
-    public function knowledge()
-    {
-        return $this->belongsTo(Knowledge::class,'knowledge_id','id');
-    }
 }

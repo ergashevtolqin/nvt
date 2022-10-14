@@ -3,6 +3,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PillController;
+use App\Http\Controllers\PlanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\LoginAuth;
@@ -18,10 +19,10 @@ use App\Http\Middleware\LoginAuth;
 |
 */
 // Route::middleware(['web'])->group(function () {
-    
 
 
-   
+
+
     Route::post('region/elchi', [App\Http\Controllers\NovatioController::class,'region']);
     Route::post('region/chart', [App\Http\Controllers\NovatioController::class,'regionChart']);
     Route::post('calendar', [App\Http\Controllers\NovatioController::class,'calendar']);
@@ -29,8 +30,6 @@ use App\Http\Middleware\LoginAuth;
     Route::post('grade/save', [App\Http\Controllers\NovatioController::class,'gradeSave']);
     Route::post('grade/tashqi', [App\Http\Controllers\NovatioController::class,'gradeTashqi']);
     Route::post('/sms',[App\Http\Controllers\HomeController::class, 'smsfly']);
-    Route::post('edit/purchase', [App\Http\Controllers\NovatioController::class,'editPurchase']);
-
 
 Auth::routes();
 
@@ -56,13 +55,18 @@ Route::middleware([LoginAdmin::class])->group(function () {
 $user = DB::table('tg_user')->where('admin',false)->pluck('username');
 
 foreach ($user as $u) {
-    Route::get($u, [HomeController::class,'nvt']); 
+    Route::get($u, [HomeController::class,'nvt']);
 }
 Route::middleware([LoginAuth::class])->group(function () {
 
     Route::get('/',[HomeController::class,'index'])->name('blackjack');
     Route::get('/search',[HomeController::class,'filter']);
 Route::get('elchi/{id}/{time?}', [HomeController::class,'elchi'])->name('elchi');
+Route::get('plan/{id}', [PlanController::class,'create'])->name('plan');
+Route::post('plan/create/{id}', [PlanController::class,'store'])->name('plan.store');
+Route::get('plan/{id}/edit', [PlanController::class,'edit'])->name('plan.edit');
+Route::get('plan/show/{id}/{startday?}', [PlanController::class,'show'])->name('plan.show');
+Route::post('plan/{id}/update', [PlanController::class,'update'])->name('plan.update');
 Route::get('elchi-list', [HomeController::class,'elchiList'])->name('elchi-list');
 Route::get('user-list', [HomeController::class,'userList'])->name('user-list');
 Route::get('/status', [HomeController::class,'userOnlineStatus']);
@@ -102,16 +106,6 @@ Route::get('bquestion/{id?}/delete', [App\Http\Controllers\BilimQuestionControll
 
 Route::resource('knowledge',KnowledgeController::class);
 Route::get('knowledge/{id?}/delete', [App\Http\Controllers\KnowledgeController::class,'destroy'])->name('knowledge.delete');
-
-Route::get('knowledge-grade', [App\Http\Controllers\HomeController::class,'knowGrade'])->name('know.grade');
-Route::get('elchi_know/{id?}', [App\Http\Controllers\ElchiController::class,'elchiKnow'])->name('elchi.know');
-Route::post('know-grade-store', [App\Http\Controllers\ElchiController::class,'knowGradeStore'])->name('know-grade.store');
-Route::get('all-grade', [App\Http\Controllers\GradeController::class,'allGrade'])->name('all.grade');
-Route::post('all-grade', [App\Http\Controllers\GradeController::class,'allGradeStore'])->name('all-grade.store');
-Route::post('all-grade-step1', [App\Http\Controllers\GradeController::class,'allGradeStoreStep1'])->name('all-grade-step1.store');
-Route::post('all-grade-step3', [App\Http\Controllers\GradeController::class,'allGradeStoreStep3'])->name('all-grade-step3.store');
-
-Route::get('journal-purchase', [App\Http\Controllers\JournalController::class,'purchase'])->name('purchase.journal');
 
 #end-position
 

@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\UserSystemInfo;
+use App\Models\Plan;
+use App\Models\PlanWeek;
+use App\Models\ProductSold;
+use App\Services\PlanHomeControllerService;
+use App\Services\Sold;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 // use Illuminate\Http\Patient;
@@ -11,11 +16,7 @@ use App\Models\Patient;
 use App\Models\Position;
 use App\Models\Pill;
 use App\Models\Question;
-use App\Models\Knowledge;
-use App\Models\PillQuestion;
-use App\Models\UserQuestion;
-use App\Models\ConditionQuestion;
-use App\Models\KnowledgeQuestion;
+use App\Models\Region;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Cache;
@@ -29,7 +30,7 @@ use Storage;
 use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Arr;
+use function PHPUnit\Framework\isEmpty;
 
 class HomeController extends Controller
 {
@@ -84,15 +85,15 @@ class HomeController extends Controller
         //     'phone' => $phone,
         //     'message' => $message,
         // ];
-        
+
         // $ch = curl_init('https://api.smsfly.uz/send');
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
         // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        
+
         // // execute!
         // $response = curl_exec($ch);
-        
+
         // curl_close($ch);
 
         // return [
@@ -104,7 +105,7 @@ class HomeController extends Controller
         // dd($request);
         // \File::delete(public_path() . '/assets/img/'.$getimg);
         // $id =2;
-            
+
         $pharmacy = Pharmacy::all();
         // foreach($pharmacy as $item)
         // {
@@ -150,7 +151,7 @@ class HomeController extends Controller
         $user = DB::table('tg_productssold')
         ->selectRaw('SUM(tg_productssold.number * tg_medicine.price) as allprice,SUM(tg_productssold.number) as allnumber,tg_medicine.name,tg_medicine.price');
         $search = $user->join('tg_medicine','tg_medicine.id','tg_productssold.medicine_id');
-               
+
         // $search = $user->addSelect(DB::raw('count(*) as last'));
 
         $search = $user->groupBy('tg_medicine.name','tg_medicine.price')->get();
@@ -169,7 +170,7 @@ class HomeController extends Controller
         // ->where('department_id',DB::table('tg_department')->where('name','Bilim')->where('status',1)->first()->id)
         // ->delete();
         // DB::table('tg_department')->where('name','Bilim')->where('status',1)->delete();
-        
+
         // $deparid = DB::table('tg_productssold')->where('order_id',720)->update([
         //     'number' => 1
         // ]);
@@ -188,196 +189,6 @@ class HomeController extends Controller
 
         // $regions = Question::with('pill')->get();
         // return $regions;
-        // $array = [1, 2, 3, 4, 5];
-        // $pluck_id = PillQuestion::where('knowledge_id',3)->pluck('id');
- 
-        // $random = array_rand($pluck_id,2);
-        // return Carbon::now();
-        // $users = DB::table('tg_user_questions')->where('id','>',470)->delete();
-
-        // $user_question = UserQuestion::where('user_id',59)->get('step3');
-        // // return $user_question;
-        // $pluck_id = PillQuestion::where('knowledge_id',3)->count();
-        // $step1_ids = [];
-        // foreach($user_question as $user)
-        // {
-        //     $step1_user = json_decode($user->step3);
-        //     foreach($step1_user as $key => $value)
-        //     {   
-        //         if ($key == 2) {  
-        //             foreach($value as $v_item) 
-        //             {
-        //                 $step1_ids[] = $v_item;
-        //             }
-        //         }
-        //     }
-        // }
-        // rsort($step1_ids);
-        // return $step1_ids;
-        // $step1_ids_slice = $step1_ids;
-        // if($pluck_id <= count($step1_ids))
-        // {
-        //     $max = floor(count($step1_ids) / $pluck_id);
-        //     for ($i=0; $i < $max*$pluck_id; $i++) { 
-        //         array_splice($step1_ids,0,1);
-        //     }
-        // }
-        // return $step1_ids; 
-        $knowledges = Knowledge::with('pill_question')->get();
-        $users = DB::table('tg_user')->where('admin',FALSE)->get('id');
-
-        // $knowledges2 = ConditionQuestion::distinct()->pluck('pill_question_id');
-        // $knowledges = PillQuestion::where('knowledge_id',3)->distinct()->pluck('id');
-        // $knowledges = PillQuestion::get;
-        // $knowledge = PillQuestion::all();
-        // $knowledge = PillQuestion::all();
-        // return $users;  
-        $step1 = [];
-        $step3 = [];
-        $question_step = [];
-        $testarray = [];
-        foreach($users as $user_items)
-        {
-            $user_question = UserQuestion::where('user_id',$user_items->id)->get();
-            foreach($knowledges as $key => $pills)
-            {   
-                
-                if($pills->step == 1)
-                {
-                    $step1_ids = [];
-                        foreach($user_question as $user)
-                        {
-                            $step1_user = json_decode($user->step1);
-                            foreach($step1_user as $key => $value)
-                            {   
-                                if ($key == $pills->id) {
-                                    foreach($value as $v_item) 
-                                        {
-                                            $step1_ids[] = $v_item;
-                                        }
-                                }
-                            }
-                        }
-
-                    $step1_count = PillQuestion::where('knowledge_id',$pills->id)->count();
-                    if($step1_count <= count($step1_ids))
-                        {
-                            if($step3_count == 0)
-                                {
-                                $max = 0;
-
-                                }else{
-                                    $max = floor(count($step1_ids) / $step1_count);
-
-                                }
-                            
-                            for ($i=0; $i < $max*$step1_count; $i++) { 
-                            unset($step1_ids[$i]);
-                            }
-                        }
-                    // $step1_unique = array_unique($step1_ids);
-                    $pluck_id = PillQuestion::where('knowledge_id',$pills->id)->inRandomOrder()
-                    ->whereNotIn('id',$step1_ids)
-                    ->limit($pills->number)->pluck('id');
-                    if(count($pluck_id) == 0){
-                        $pluck_id = PillQuestion::where('knowledge_id',$pills->id)->inRandomOrder()
-                        ->limit($pills->number)->pluck('id');
-                    }
-                    $step1[$pills->id] = $pluck_id;
-
-                }
-                if($pills->step == 3)
-                {
-                    $step3_ids = [];
-                        foreach($user_question as $user)
-                        {
-                            $step3_user = json_decode($user->step3);
-                            foreach($step3_user as $key => $value)
-                            {   
-                                if ($key == $pills->id) {
-                                    foreach($value as $v_item) 
-                                        {
-                                            $step3_ids[] = $v_item;
-                                        }
-                                }
-                            }
-                        }
-                        $step3_count = PillQuestion::where('knowledge_id',$pills->id)->count();
-                        if($step3_count <= count($step3_ids))
-                            {
-                                if($step3_count == 0)
-                                {
-                                $max = 0;
-
-                                }else{
-                                $max = floor(count($step3_ids) / $step3_count);
-
-                                }
-                                for ($i=0; $i < $max*$step3_count; $i++) { 
-                                unset($step3_ids[$i]);
-                                }
-                            }
-                    // $step3_unique = array_unique($step3_ids);
-                    $pluck_id = PillQuestion::where('knowledge_id',$pills->id)->inRandomOrder()
-                    ->whereNotIn('id',$step3_ids)
-                    ->limit($pills->number)->pluck('id');
-                    if(count($pluck_id) == 0)
-                    {
-                        $pluck_id = PillQuestion::where('knowledge_id',$pills->id)->inRandomOrder()
-                         ->limit($pills->number)->pluck('id');
-                    }
-                    $step3[$pills->id] = $pluck_id;
-                    foreach($step3[$pills->id] as $item_key => $item)
-                    {
-                        $condition_id = ConditionQuestion::where('pill_question_id',$item)->pluck('id');
-                    
-                        foreach($condition_id as $condition_key => $condition)
-                        {
-                            $condition_item_id = KnowledgeQuestion::where('condition_question_id',$condition)->inRandomOrder()
-                            ->limit(1)->pluck('id');
-                            $question_step[$condition] = $condition_item_id;
-
-                        }
-                    }
-                }
-                
-            }
-            // $new_user_question = new UserQuestion([
-            //     'user_id' => $user_items->id,
-            //     'step1' => json_encode($step1),
-            //     'step3' => json_encode($step3),
-            //     'question_step' => json_encode($question_step),
-            //     'created_at' => '2022-10-02 12:19:21',
-            //     'updated_at' => '2022-10-02 12:19:21',
-            // ]);
-            // $new_user_question->save();
-            $step1 = [];
-                $step3 = [];
-                $question_step = [];
-                    $step1_ids = [];
-                    $step3_ids = [];
-
-        }
-        // $user_question = UserQuestion::where('user_id',59)->get();
-        // $pluck_id = PillQuestion::where('knowledge_id',2)->pluck('id');
-        // $step1_ids = [];
-        // foreach($user_question as $user)
-        // {
-        //     $step1_user = json_decode($user->step1);
-        //     foreach($step1_user as $key => $value)
-        //     {   
-        //         if ($key == 3) {
-        //             $step1_ids[] = $value[0];
-        //         }
-        //     }
-        // }
-        // $pluck_id = PillQuestion::where('knowledge_id',3)
-        // ->whereNotIn('id',$step1_ids)
-        // ->inRandomOrder()
-        //             ->limit(1)->pluck('id');
-        // return $step1_user;
-        // var_dump($pluck_id);
-        // die();
 
         $regions = DB::table('tg_region')->get();
 
@@ -437,28 +248,28 @@ class HomeController extends Controller
     }
     public function elchi($id,$time)
     {
-        // $getimg = DB::table('tg_user')->where('id',$id)->value('image');
-        // $img = DB::table('tg_user')->where('id',$id)->value('image_change');
-        // if($img)
-        // {
-        //     \File::delete(public_path() . '/assets/img/'.$getimg);
-        //     $response = Http::get('http://128.199.2.165:8100/api/v1/user/image/'.$id);
-        //     $url = $response['image'];
-        //     $contents = file_get_contents($url);
-        //     $name = substr($url, strrpos($url, '/') + 1);
-        //     Storage::disk('public_uploads')->put($name, $contents);
-        //     $update = DB::table('tg_user')->where('id',$id)->update([
-        //         'image_change' => FALSE
-        //     ]);
-        // }
+        $getimg = DB::table('tg_user')->where('id',$id)->value('image');
+        $img = DB::table('tg_user')->where('id',$id)->value('image_change');
+        if($img)
+        {
+            \File::delete(public_path() . '/assets/img/'.$getimg);
+            $response = Http::get('http://128.199.2.165:8100/api/v1/user/image/'.$id);
+            $url = $response['image'];
+            $contents = file_get_contents($url);
+            $name = substr($url, strrpos($url, '/') + 1);
+            Storage::disk('public_uploads')->put($name, $contents);
+            $update = DB::table('tg_user')->where('id',$id)->update([
+                'image_change' => FALSE
+            ]);
+        }
         // // return substr($getimg,6);
         // return $getimg;
         // $exists = Storage::disk('public_uploads')->exists(substr($getimg,6));
         // // return $exists;
         // if(!$exists) {
-            
+
         // }
-        
+
 
         if ($time == 'today') {
             $date_begin = today();
@@ -490,10 +301,10 @@ class HomeController extends Controller
             $date_end = substr($time,11);
             $dateText = date('d.m.Y',(strtotime ( $date_begin ) )).'-'.date('d.m.Y',(strtotime ( $date_end ) ));
 
-        }  
+        }
         // return  substr("$time",0,10);
         $elchi = DB::table('tg_user')->where('tg_user.id',$id)
-        ->select('tg_user.image_url','tg_specialty.name as lv','tg_user.id','tg_user.tg_id','tg_user.username','tg_user.birthday','tg_user.phone_number','tg_user.first_name','tg_user.last_name','tg_region.name as v_name','tg_district.name as d_name')
+        ->select('tg_user.image','tg_specialty.name as lv','tg_user.id','tg_user.tg_id','tg_user.username','tg_user.birthday','tg_user.phone_number','tg_user.first_name','tg_user.last_name','tg_region.name as v_name','tg_district.name as d_name')
         ->join('tg_region','tg_region.id','tg_user.region_id')
         ->join('tg_district','tg_district.id','tg_user.district_id')
         ->join('tg_specialty','tg_specialty.id','tg_user.specialty_id')
@@ -527,7 +338,7 @@ class HomeController extends Controller
             foreach ($medicine_cate as $mkey => $med) {
 
                 $medicineall[$mkey] = array('price' => 0,'number' => 0, 'name' => $med->m_name,'cid'=>$med->c_id);
-                
+
 
             }
             foreach ($medicine_cate as $mkey => $med) {
@@ -581,7 +392,7 @@ class HomeController extends Controller
                     $catesum = 0;
 
             }
-           
+
             if(count($cateory) == 0)
             {
                 foreach ($category as $key => $value) {
@@ -631,7 +442,7 @@ class HomeController extends Controller
             foreach($department as $depar)
             {
         $question = DB::table('tg_question')->where('department_id',$depar->id)->get();
-        
+
 
         foreach($users as $dnam)
         {
@@ -707,13 +518,13 @@ class HomeController extends Controller
         $d_array[] = array('id'=>$depar->id,'name' => $depar->name,'avg' => number_format($allsavguser, 2));
         $d_for_user2 = [];
 
-        
+
 
         }
         $davg = 0;
         $maxnol = 0;
         foreach($d_array as $dr)
-        {   
+        {
             if($dr['avg'] > 0)
             {
                 $maxnol +=1;
@@ -725,7 +536,7 @@ class HomeController extends Controller
             $allavg =0;
         }else{
 
-        
+
         $allavg = $davg/$maxnol;
         }
 
@@ -748,7 +559,7 @@ class HomeController extends Controller
             if(count($tashqi) != 0)
             {
 
-            
+
             foreach($tashqi as $tq)
             {
                 if($cl == $tq->teacher_id)
@@ -758,12 +569,12 @@ class HomeController extends Controller
             }
 
                 $altgarde += $tgrade/count($tashqi);
-            
+
             }else{
                 $altgarde += 0;
 
             }
-            
+
         }
 
         if(count($client) == 0)
@@ -796,108 +607,80 @@ class HomeController extends Controller
         // ->select('tg_cgrade.grade as grade','tg_cgrade.created_at as cat','tg_client.device as device','tg_cgrade')
         ->join('tg_client','tg_client.id','tg_cgrade.teacher_id')
         ->get();
+        // Birodar codes
+        #region Plan
 
-        $know_grade = DB::table('tg_knowledge_grades')
-        ->where('user_id',$id)->get();
+        $plan=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->exists();
+        $ps=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->with('planweek')->get();
 
-        $knowledges = DB::table('tg_knowledge')->whereIn('step',[1,3])->get();
-        $know_teachers = DB::table('tg_knowledge_grades')->distinct()->pluck('teacher_id');
-        // return $know_teachers;
-        $pill_array = [];
-        $step_array = [];
-        $step_array_counter = [];
-        $step_array_grade_all = [];
-        
-        foreach($knowledges as $knowledge)
-        {
-            if($knowledge->step == 1){
-            $pill_counter = 0;
-                foreach($know_teachers as $teachers)
-            {
-                $condition = DB::table('tg_pill_questions')->where('knowledge_id',$knowledge->id)->pluck('id');
-                $questions = DB::table('tg_knowledge_grades')
-                ->whereIn('pill_id',$condition)
-                ->where('user_id',$id)
-                ->where('teacher_id',$teachers)->avg('grade');
-
-                $questions_grade = DB::table('tg_knowledge_grades')
-                ->whereIn('pill_id',$condition)
-                ->where('user_id',$id)
-                ->where('teacher_id',$teachers)->first();
-
-                $step_array_grade_all[] = $questions_grade;
-
-                $questions_count = DB::table('tg_knowledge_grades')
-                ->whereIn('pill_id',$condition)
-                ->where('user_id',$id)
-                ->where('teacher_id',$teachers)->count();
-
-                $step_array_grade = [];
-
-                if($questions == 0 )
-                {
-                    $pill_avg = 0;
-
-                }else{
-                    $pill_avg = $questions/$questions_count;
-                }
-
-                $pill_counter += $pill_avg;
-            }
-                if($pill_counter == 0)
-                {
-                    $all_avg = 0;
-                }else{
-                    $all_avg = $pill_counter/count($know_teachers);
-                }
-                $pill_array[] = array('avg' => number_format($all_avg,2),'name' =>$knowledge->name);
-            }
-            if($knowledge->step == 3){
-
-                $condition_step = DB::table('tg_pill_questions')->where('knowledge_id',$knowledge->id)->get();
-                
-                foreach($condition_step as $key_con => $con)
-                {
-            $pill_counter = 0;
-            $pill_counter_count = 0;
-
-                foreach($know_teachers as $teachers)
-                {
-
-                $step3 = DB::table('tg_knowledge_grades')
-                ->select('tg_knowledge_grades.grade','tg_pill_questions.name','tg_pill_questions.id as pid')
-                ->where('tg_knowledge_grades.teacher_id',$teachers)
-                ->where('tg_pill_questions.id',$con->id)
-                ->where('tg_knowledge_grades.user_id',$id)
-                ->join('tg_knowledge_questions','tg_knowledge_questions.id','tg_knowledge_grades.knowledge_question_id')
-                ->join('tg_condition_questions','tg_condition_questions.id','tg_knowledge_questions.condition_question_id')
-                ->join('tg_pill_questions','tg_pill_questions.id','tg_condition_questions.pill_question_id')
-                ->avg('tg_knowledge_grades.grade');
-                if($step3 != 0)
-                        {
-                            if(isset($step_array_counter[$key_con]))
-                            {
-                                $step_array_counter[$key_con] = $step_array_counter[$key_con] + 1;
-                            $step_array[$key_con] = array('count' => $step_array[$key_con]['count'] + 1,'id' => $key_con,'avg' => $step_array[$key_con]['avg'] + $step3,'name' => $con->name);
-
-                            }else{
-                                $step_array_counter[$key_con] = 1;
-                            $step_array[$key_con] = array('count' => 1,'avg' => $step3,'name' => $con->name);
-
-                            }
-                        }
-                }
-                        
-                }
-
-                
-            }
-            
-            
+        $allplans=0;
+        $allweekplan=[];
+        $numbers=[];
+        for ($s=0;$s<4;$s++){
+            $allweekplan[$s]=0;
         }
-        // return $step_array_grade_all;
-        return view('welcome',compact('step_array','pill_array','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
+        if ($plan){
+            foreach ($ps as $p){
+                foreach ($p->planweek as $pw){
+                    $allplans+=$pw->plan;
+                }
+            }
+            $t=0;
+
+            foreach ($ps[0]->planweek as $item){
+                $allweekplan[$t]=0;
+                foreach ($ps as $p){
+                    foreach ($p->planweek as $pw){
+                        if($item->startday==$pw->startday){
+
+                            $allweekplan[$t]+=$pw->plan;
+
+                        }
+                    }
+
+                }
+                $t++;
+            }
+
+            $k=0;
+            $numbers=[];
+
+            foreach ($ps[0]->planweek as $item){
+
+                $solds=ProductSold::where('user_id',$id)->whereBetween('created_at', [$item->startday, $item->endday])->get();
+//                dd($solds);
+                $numbers[$k]=0;
+                $l=0;
+                $sum=0;
+
+                foreach ($solds as $sold){
+
+                    $numbers[$k]+=$sold->number;
+                }
+                $k++;
+            }
+        }
+        $plan_product = [];
+        foreach ($ps as $p){
+//            dd($p);
+            foreach ($p->planweek as $pw){
+//                dd($pw);
+                $count= ProductSold::where('user_id',$id)
+                    ->where('medicine_id',$p->medicine_id)
+                    ->whereBetween('created_at', [$pw->startday, $pw->endday])->sum('number');
+                $name = DB::table('tg_medicine')->where('id',$p->medicine_id)->value('name');
+                if($count != 0)
+                {
+                    $plan_product[] = array('plan' => $p->number,'count' => $count,'name' => $name ,'begin' => $pw->startday, 'end' => $pw->endday );
+                }
+            }
+        }
+
+//        dd($plan_product);
+        #endregion
+        return view('welcome',compact('allweekplan','plan_product','numbers','allplans','ps','plan','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
         // return $id;
+        //Birodar codes end
     }
     public function elchiList()
     {
@@ -926,15 +709,16 @@ class HomeController extends Controller
                     foreach ($users as $key => $value) {
                         $userarrayreg[] = $value->id;
                     }
-            
+
         }
 
         $elchi = DB::table('tg_user')
             ->whereIn('tg_user.id',$userarrayreg)
             ->where('tg_user.admin',FALSE)
-            ->select('tg_user.image_url','tg_user.admin','tg_region.id as rid','tg_region.name as v_name','tg_user.username','tg_user.id','tg_user.last_name','tg_user.first_name')
+            ->select('tg_user.image','tg_user.admin','tg_region.id as rid','tg_region.name as v_name','tg_user.username','tg_user.id','tg_user.last_name','tg_user.first_name')
             ->join('tg_region','tg_region.id','tg_user.region_id')
             ->orderBy('tg_user.admin','DESC')->get();
+
 
         $elchi_work=[];
         $elchi_fact=[];
@@ -969,10 +753,10 @@ class HomeController extends Controller
         if(isset($date[0]))
         {
 
-        
+
         $all_date=[];
         foreach($cale_date as $key => $value)
-        {   
+        {
             if($value == 'true' && $key <=  date('d',(strtotime ( $date[0] ) )))
             {
                 if (strlen($key) == 1) {
@@ -993,7 +777,7 @@ class HomeController extends Controller
             if(date('l',(strtotime ( $d ) )) == 'Sunday')
             {
                 $sunday = $sunday + 1;
-                
+
             }
         }
 
@@ -1001,7 +785,7 @@ class HomeController extends Controller
         $pr = count($all_date)+$sunday;
         // return $date;
         $elchi_work[$elch->id] = ($cale->work_day+$sunday).'/'.(count($date)).'/'.$pr;
-        
+
                 $user = DB::table('tg_productssold')
                 ->selectRaw('SUM(tg_productssold.number * tg_medicine.price) as allprice,SUM(tg_productssold.number) as allnumber,tg_medicine.name,tg_medicine.price')
                 ->whereIn(DB::raw('DATE(tg_productssold.created_at)'), $date)
@@ -1043,17 +827,6 @@ class HomeController extends Controller
 
         // return view('elchi');
         return view('elchi',compact('elchi','elchi_work','elchi_fact','elchi_prognoz'));
-    }
-    public function knowGrade(Request $request)
-    {
-        $elchi = DB::table('tg_user')
-            // ->whereIn('tg_user.id',$userarrayreg)
-            ->where('tg_user.admin',FALSE)
-            ->select('tg_user.image','tg_user.admin','tg_region.id as rid','tg_region.name as v_name','tg_user.username','tg_user.id','tg_user.last_name','tg_user.first_name')
-            ->join('tg_region','tg_region.id','tg_user.region_id')
-            ->orderBy('tg_user.admin','DESC')->get();
-
-        return view('elchi-know',compact('elchi'));
     }
     public function userList(Request $request)
     {
@@ -1130,7 +903,7 @@ class HomeController extends Controller
             $f_date_end = date('Y-m-d',(strtotime ( '-1 day' , strtotime ( substr($time,11)) ) ));
             $dateText = date('d.m.Y',(strtotime ( $date_begin ) )).'-'.date('d.m.Y',(strtotime ( $date_end ) ));
 
-        }  
+        }
         $r_id_array = [];
 
         if(isset(Session::get('per')['region']) && Session::get('per')['region'] == 'true')
@@ -1199,8 +972,8 @@ class HomeController extends Controller
 
                         $medic[$mkey] = array('mid'=>$one->m_id,'narx'=>$med->price,'price' => $medisum,'number' => $number, 'name' => $med->name,'cid' => $one->c_id,'nol' => 1);
                     }
-                    
-            
+
+
                 }
                     $medisum = 0;
                     $number = 0;
@@ -1245,8 +1018,8 @@ class HomeController extends Controller
 
                         $medic2[$mkey] = array('mid'=>$one->m_id,'narx'=>$med->price,'price' => $medisum,'number' => $number, 'name' => $med->name,'cid' => $one->c_id,'nol' => 1);
                     }
-                    
-            
+
+
                 }
                     $medisum = 0;
                     $number = 0;
@@ -1270,7 +1043,7 @@ class HomeController extends Controller
             //     unset($alls22[$key]->mid);
             // }
             $medic2 = $alls22;
-            
+
         return view('product',compact('medic','medic2','category','dateText'));
     }
     public function userOnlineStatus()
@@ -1338,7 +1111,7 @@ class HomeController extends Controller
         // $text4 = 'Mozilla/5.0 (Linux; Android 12; M2101K7AG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Mobile Safari/537.36';
         // $text3 = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.50';
         // return wordSimilarity($agent, $text4);
-        
+
         $get_agent = DB::table('tg_client')->get();
         $agent_array = [];
         $max=0;
@@ -1393,7 +1166,7 @@ class HomeController extends Controller
         $year = substr($month,3);
         $months = substr($month,0,-5);
         $maxday =  Carbon::now()->year($year)->month($months)->daysInMonth;
-        $dates = []; 
+        $dates = [];
 
         $ym = DB::table('tg_calendar')->where('year_month',$month)->value('day_json');
         // return $ym;
@@ -1427,7 +1200,7 @@ class HomeController extends Controller
         return redirect()->back();
     }
     public function loginSite(Request $request)
-    {   
+    {
         $validated = $request->validate([
             'email' => 'required',
             'password' => 'required|min:8',
@@ -1437,9 +1210,9 @@ class HomeController extends Controller
         // // die();
         // foreach ($schema_name as $key => $value) {
             setSchema('admin');
-           
 
-        
+
+
             if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
                 $user = Auth::user();
             }else{
@@ -1473,7 +1246,7 @@ class HomeController extends Controller
             // // }else{
             //     Session::put('rol', json_decode($schema_row->position_json));
             // // }
-            
+
             setSchemaInConnection();
             $all_patient = DB::table('patients')->count();
     $all_chkb = DB::table('patients')->where('treatment_tip','app.chkb')->count();
@@ -1483,8 +1256,8 @@ class HomeController extends Controller
     $chkb_false = DB::table('patients')->where('death',false)->where('treatment_tip','app.chkb')->count();
         // return view('welcome',compact('all_patient','all_chkb','all_true','chkb_true','all_false','chkb_false'));
         return view('welcome',compact('all_patient','all_chkb','all_true','chkb_true','all_false','chkb_false','user'));
-        
-            
+
+
         }else{ return redirect()->back(); }
             // return $schema_row;
     }
@@ -1551,6 +1324,6 @@ class HomeController extends Controller
         return view('user.login');
     }
 
-    
+
 
 }

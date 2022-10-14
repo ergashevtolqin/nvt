@@ -15,7 +15,7 @@
 
     <!-- Fonts -->
     @include('admin.partials.css');
-    
+
     <style>
         table.dataTable thead .sorting:after,
 table.dataTable thead .sorting:before,
@@ -29,6 +29,10 @@ table.dataTable thead .sorting_desc_disabled:after,
 table.dataTable thead .sorting_desc_disabled:before {
   bottom: .5em;
 }
+
+        .display-none{
+            display: none!important;
+        }
     </style>
 </head>
 <body class="mini-sidebar">
@@ -49,7 +53,7 @@ table.dataTable thead .sorting_desc_disabled:before {
         @yield('admin_content')
         {{-- </div> --}}
     </div>
-    
+
 </body>
 
     @include('admin.partials.js');
@@ -58,7 +62,7 @@ table.dataTable thead .sorting_desc_disabled:before {
 
 
 <script>
-    
+
         $("#hospital_name").change(function(){
             var hospital = $("#hospital_name").val();
             var _token   = $('meta[name="csrf-token"]').attr('content');
@@ -75,7 +79,7 @@ table.dataTable thead .sorting_desc_disabled:before {
                     $('#del_branch').remove();
                     $('#for_branch').after("<div class='form-group col-md-3' id='del_branch' style='display:none;'><label>{{ __('app.filial') }}</label><input  type='text' name='filial_schema' id='change_branch' value='default' class='form-control form-control-sm' /></div>");
                     $('#change_branch').val(branch_schema);
-                    
+
                 }
                 },
                 error: function(error) {
@@ -83,7 +87,7 @@ table.dataTable thead .sorting_desc_disabled:before {
                 }
                 });
         });
-        
+
 
         function userFunction() {
             var hospital = $("#h_name_f_user").val();
@@ -105,7 +109,7 @@ table.dataTable thead .sorting_desc_disabled:before {
                         $.each(user_schema, function( index, value ) {
                         $('#r_name_user').after("<option value='"+value['id']+"'>"+value['role_name']+"</option>");
                     });
-                    }  
+                    }
                 }
                 },
                 error: function(error) {
@@ -121,7 +125,7 @@ table.dataTable thead .sorting_desc_disabled:before {
                 x.type = "password";
             }
         }
-        
+
         $(document).ready(function(){
             $("input[type=email]").change(function(){
                 var email = $('.for_email').val();
@@ -138,7 +142,7 @@ table.dataTable thead .sorting_desc_disabled:before {
                         $('#error_email').css('display','');
                         $('.for_email_button').css('display','none');
 
-                        
+
                     }else{
                         $('.for_email_button').css('display','');
                         $('#error_email').css('display','none');
@@ -153,6 +157,6 @@ table.dataTable thead .sorting_desc_disabled:before {
     $('input:checkbox').not(this).prop('checked', this.checked);
 });
         });
-        
-</script>   
+
+</script>
 </html>

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateKnowledgeTable extends Migration
+class CreateSoldTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,15 @@ class CreateKnowledgeTable extends Migration
      */
     public function up()
     {
-        Schema::create('tg_knowledge', function (Blueprint $table) {
+        Schema::create('sold', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->integer('number');
-            $table->integer('step');
             $table->timestamps();
+            $table->bigInteger('medicine_id');
+            $table->bigInteger('user_id');
+            $table->bigInteger('order_id');
+            $table->integer('price_product');
+            $table->boolean('is_active');
         });
     }
 
@@ -29,6 +32,6 @@ class CreateKnowledgeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('knowledge');
+        Schema::dropIfExists('sold');
     }
 }
