@@ -102,10 +102,10 @@ if(!function_exists('wordSimilarity')){
             'filter' => 'Filter',
             'elchi' => 'Elchi',
             'pro' => 'Mahsulotlar',
-            'grade' => 'Baholash',
+            // 'grade' => 'Baholash',
             'ques' => 'Savollar',
             'know_ques' => 'Bilim savollar',
-            'know_grade' => 'Bilim baholash',
+            'know_grade' => 'Baholash',
             'edit_purchase' => 'Xaridlarni o\'zgartirish',
             'show_purchase' => 'Taxrirlash tarixi',
             'setting' => 'Sozlamalar',
@@ -114,7 +114,7 @@ if(!function_exists('wordSimilarity')){
             'region' => 'Barcha viloyat',
         ];
         // $knowledge = Knowledge::first();
-        // $h_positions['bilim'.$knowledge->id] = $knowledge->name;
+        $h_positions['bilim'] = 'Bilim';
         $department = DB::table('tg_department')->where('status',1)->get();
         foreach ($department as $key => $value) {
             $h_positions['d'.$value->id] = $value->name;

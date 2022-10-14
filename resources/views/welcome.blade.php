@@ -170,6 +170,65 @@
 
                </div>
             @endforeach
+            <div class="tab-pane show @if($key==0) active @endif" id="solid-justified-tab-bilim">
+               <div class="tab-left">
+               
+                  @foreach ($step3_get_user as $ite)
+                  {{-- @if($ite['depid'] == $item['id']) --}}
+                  <div class="d-flex mb-3">
+                     <div class="medicne d-flex">
+                        {{-- <a style="cursor: pointer" onclick="getQuestion(`qd{{$ite['uid']}}{{$item['id']}}`)"> {{$ite['username']}}</a> --}}
+                        <a style="cursor: pointer"> {{$ite->last_name}} {{$ite->first_name}}</a>
+                       
+                     </div>
+                     <div class="medicne-time ml-auto">
+                        {{-- {{$ite->first_name}} --}}
+                     </div>
+                  </div>
+                  {{-- @endif --}}
+                  @foreach ($step3_get as $item)
+
+                  <div class="tab-left ml-4 allqd qd{{$ite->id}}{{$item->teacher_id}}" style="">
+                     @if($ite->id == $item->teacher_id)
+                     <div class="d-flex mb-3">
+                        <div class="medicne d-flex">
+                           <span>{{$item->name}}</span>
+                        </div>
+                        <div class="medicne-time ml-auto mr-5">
+                           {{$item->grade}}
+                        </div>
+                        <div class="medicne">
+                           {{$item->created_at}}
+                        </div>
+                     </div>
+                     @endif
+                     
+                  </div>
+                  @endforeach
+                  @foreach ($step_array_grade_all as $item)
+
+                  <div class="tab-left ml-4 allqd qd{{$ite->id}}{{$item->teacher_id}}" style="">
+                     @if($ite->id == $item->teacher_id)
+                     <div class="d-flex mb-3">
+                        <div class="medicne d-flex">
+                           <span>{{$item->name}}</span>
+                        </div>
+                        <div class="medicne-time ml-auto mr-5">
+                           {{$item->grade}}
+                        </div>
+                        <div class="medicne">
+                           {{$item->created_at}}
+                        </div>
+                     </div>
+                     @endif
+                     
+                  </div>
+                  @endforeach
+                  
+                  @endforeach
+                  
+               </div>
+            </div>
 
             </div>
             </div>
