@@ -98,7 +98,7 @@
     </div>
 
 
-    <div class="row d-flex justify-content-between p-5"  id="catid">
+    {{-- <div class="row d-flex justify-content-between p-5"  id="catid">
                 @if($plan)
                     @php $t=0;  @endphp
 
@@ -118,12 +118,7 @@
                                 <span class="numberkm">{{substr($pw->endday,8)}}</span>
                             </span>
                         </h1>
-{{--                        <h6 style="margin-top:-10px;">--}}
-{{--                            <span style="text-align:left;">--}}
-{{--                                <span style="font-family:Gilroy;color:#f34539;">-85.84% </span>--}}
-{{--                                <i class="fas fa-arrow-down mr-1" style="color:#f34539;"></i>--}}
-{{--                            </span>--}}
-{{--                        </h6>--}}
+
                     </div>
                 </div>
             </div>
@@ -131,14 +126,14 @@
                 @php $t++; @endphp
             @endforeach
         @endif
-    </div>
+    </div> --}}
 
 
 
 
 
 
-    <div class="row d-flex justify-content-between p-2">
+    {{-- <div class="row d-flex justify-content-between p-2">
         @if($plan)
 
             <table class="table table-striped plan">
@@ -156,8 +151,6 @@
                 @foreach($ps[0]->planweek as $pw)
                 @foreach($plan_product as $p)
                     @if($pw->startday==$p['begin'])
-
-                        {{--                    @if($start)--}}
                     <tr style="display: none" class="alldatebegin plan{{substr($pw->startday,8)}}">
                         <td>{{$loop->index+1}}</td>
                         <td>{{$p['name']}}</td>
@@ -171,7 +164,7 @@
                 </tbody>
             </table>
         @endif
-    </div>
+    </div> --}}
     <div class="row" id="forcollapsegrade" style="display: none;">
       <div class="col-12 col-md-12 col-lg-12 d-flex flex-wrap">
             <div class="card bg-white">
