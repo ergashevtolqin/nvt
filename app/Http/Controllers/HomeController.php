@@ -189,7 +189,6 @@ class HomeController extends Controller
 
         // $regions = Question::with('pill')->get();
         // return $regions;
-<<<<<<< HEAD
         // $array = [1, 2, 3, 4, 5];
         // $pluck_id = PillQuestion::where('knowledge_id',3)->pluck('id');
  
@@ -377,8 +376,6 @@ class HomeController extends Controller
         // return $step1_user;
         // var_dump($pluck_id);
         // die();
-=======
->>>>>>> 65671284355c0c6e24ef68baf35c9892b52b14d4
 
         $regions = DB::table('tg_region')->get();
 
@@ -803,7 +800,6 @@ class HomeController extends Controller
         $plan=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->exists();
         $ps=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->with('planweek')->get();
 
-<<<<<<< HEAD
         $knowledges = DB::table('tg_knowledge')->whereIn('step',[1,3])->get();
         $know_teachers = DB::table('tg_knowledge_grades')->distinct()->pluck('teacher_id');
         // return $know_teachers;
@@ -925,7 +921,7 @@ class HomeController extends Controller
                 ->get();
         // return $step_array_grade_all;
         return view('welcome',compact('step_array_grade_all','step3_get','step3_get_user','step_array','pill_array','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
-=======
+
         $allplans=0;
         $allweekplan=[];
         $numbers=[];
@@ -990,11 +986,8 @@ class HomeController extends Controller
         }
 
 //        dd($plan_product);
-        #endregion
         return view('welcome',compact('allweekplan','plan_product','numbers','allplans','ps','plan','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
->>>>>>> 65671284355c0c6e24ef68baf35c9892b52b14d4
-        // return $id;
-        //Birodar codes end
+
     }
     public function elchiList()
     {
