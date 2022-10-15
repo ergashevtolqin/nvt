@@ -980,7 +980,7 @@ class HomeController extends Controller
                 $name = DB::table('tg_medicine')->where('id',$p->medicine_id)->value('name');
                 if($count != 0)
                 {
-                    $plan_product[] = array('plan' => $p->number,'count' => $count,'name' => $name ,'begin' => $pw->startday, 'end' => $pw->endday );
+                    $plan_product[] = array('plan' => $pw->plan,'count' => $count,'name' => $name ,'begin' => $pw->startday, 'end' => $pw->endday );
                 }
             }
         }
