@@ -112,6 +112,7 @@ class PlanController extends Controller
 //        return 'aa';
     public function edit($id)
     {
+
         $med=Medicine::all();
         $plans=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->get();
 //        dd($plans);

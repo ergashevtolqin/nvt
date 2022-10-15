@@ -556,14 +556,14 @@
 @section('admin_script')
    <script>
 
-       function show_weeks(id)
+       function show_weeks()
        {
            $('.open-plan').css('display','none');
            $(`.close-plan`).css('display','');
            $(`.table-plans`).css('display','');
 
        }
-       function close_weeks(id)
+       function close_weeks()
        {
            $('.open-plan').css('display','');
            $(`.close-plan`).css('display','none');
