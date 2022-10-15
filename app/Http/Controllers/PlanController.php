@@ -57,7 +57,7 @@ class PlanController extends Controller
     public function store(Request $request,$id)
     {
         $this->service->store($request, $id);
-        return route('elchi',['id'=>$id,'time'=>'today']);
+        return redirect()->back();
 
     }
 

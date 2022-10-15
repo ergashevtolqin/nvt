@@ -40,14 +40,13 @@
                    <h4>{{$elchi->last_name}} {{$elchi->first_name}} </h4>
                    <h5> <button type="button" class="btn btn-info" onclick="collapseGrade()">Ichki reyting {{number_format($allavg,2)}}</button> </h5>
                    <h5> <button type="button" class="btn btn-info" onclick="collapseGrade2()">Tashqi reyting {{number_format($altgardes,2)}}</button> </h5>
-                    {{-- @if($plan)
+                     @if($plan)
                         <h5> <a href="{{route('plan.edit',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Planni Tahrirlash</a> </h5>
                         <h5> <a href="{{route('plan.show',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Planni Ko'rish</a> </h5>
                     @else
                         <h5> <a href="{{route('plan',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Plan Qo'shish</a> </h5>
-                        <h5> <a href="{{route('plan.show',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Sotilgan mahsulot</a> </h5>
 
-                    @endif --}}
+                    @endif
                 </div>
              </div>
           </div>
@@ -224,14 +223,14 @@
             @endforeach
             <div class="tab-pane show @if($key==0) active @endif" id="solid-justified-tab-bilim">
                <div class="tab-left">
-               
+
                   @foreach ($step3_get_user as $ite)
                   {{-- @if($ite['depid'] == $item['id']) --}}
                   <div class="d-flex mb-3">
                      <div class="medicne d-flex">
                         {{-- <a style="cursor: pointer" onclick="getQuestion(`qd{{$ite['uid']}}{{$item['id']}}`)"> {{$ite['username']}}</a> --}}
                         <a style="cursor: pointer"> {{$ite->last_name}} {{$ite->first_name}}</a>
-                       
+
                      </div>
                      <div class="medicne-time ml-auto">
                         {{-- {{$ite->first_name}} --}}
@@ -254,7 +253,7 @@
                         </div>
                      </div>
                      @endif
-                     
+
                   </div>
                   @endforeach
                   @foreach ($step_array_grade_all as $item)
@@ -273,12 +272,12 @@
                         </div>
                      </div>
                      @endif
-                     
+
                   </div>
                   @endforeach
-                  
+
                   @endforeach
-                  
+
                </div>
             </div>
 

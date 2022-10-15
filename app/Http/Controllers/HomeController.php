@@ -191,7 +191,7 @@ class HomeController extends Controller
         // return $regions;
         // $array = [1, 2, 3, 4, 5];
         // $pluck_id = PillQuestion::where('knowledge_id',3)->pluck('id');
- 
+
         // $random = array_rand($pluck_id,2);
         // return Carbon::now();
         // $users = DB::table('tg_user_questions')->where('id','>',470)->delete();
@@ -204,9 +204,9 @@ class HomeController extends Controller
         // {
         //     $step1_user = json_decode($user->step3);
         //     foreach($step1_user as $key => $value)
-        //     {   
-        //         if ($key == 2) {  
-        //             foreach($value as $v_item) 
+        //     {
+        //         if ($key == 2) {
+        //             foreach($value as $v_item)
         //             {
         //                 $step1_ids[] = $v_item;
         //             }
@@ -219,12 +219,12 @@ class HomeController extends Controller
         // if($pluck_id <= count($step1_ids))
         // {
         //     $max = floor(count($step1_ids) / $pluck_id);
-        //     for ($i=0; $i < $max*$pluck_id; $i++) { 
+        //     for ($i=0; $i < $max*$pluck_id; $i++) {
         //         array_splice($step1_ids,0,1);
         //     }
         // }
-        // return $step1_ids; 
-        
+        // return $step1_ids;
+
         //qoshish
         // $knowledges = Knowledge::with('pill_question')->get();
         // $users = DB::table('tg_user')->where('admin',FALSE)->get('id');
@@ -236,8 +236,8 @@ class HomeController extends Controller
         // {
         //     $user_question = UserQuestion::where('user_id',$user_items->id)->get();
         //     foreach($knowledges as $key => $pills)
-        //     {   
-                
+        //     {
+
         //         if($pills->step == 1)
         //         {
         //             $step1_ids = [];
@@ -245,9 +245,9 @@ class HomeController extends Controller
         //                 {
         //                     $step1_user = json_decode($user->step1);
         //                     foreach($step1_user as $key => $value)
-        //                     {   
+        //                     {
         //                         if ($key == $pills->id) {
-        //                             foreach($value as $v_item) 
+        //                             foreach($value as $v_item)
         //                                 {
         //                                     $step1_ids[] = $v_item;
         //                                 }
@@ -266,8 +266,8 @@ class HomeController extends Controller
         //                             $max = floor(count($step1_ids) / $step1_count);
 
         //                         }
-                            
-        //                     for ($i=0; $i < $max*$step1_count; $i++) { 
+
+        //                     for ($i=0; $i < $max*$step1_count; $i++) {
         //                     unset($step1_ids[$i]);
         //                     }
         //                 }
@@ -289,9 +289,9 @@ class HomeController extends Controller
         //                 {
         //                     $step3_user = json_decode($user->step3);
         //                     foreach($step3_user as $key => $value)
-        //                     {   
+        //                     {
         //                         if ($key == $pills->id) {
-        //                             foreach($value as $v_item) 
+        //                             foreach($value as $v_item)
         //                                 {
         //                                     $step3_ids[] = $v_item;
         //                                 }
@@ -309,7 +309,7 @@ class HomeController extends Controller
         //                         $max = floor(count($step3_ids) / $step3_count);
 
         //                         }
-        //                         for ($i=0; $i < $max*$step3_count; $i++) { 
+        //                         for ($i=0; $i < $max*$step3_count; $i++) {
         //                         unset($step3_ids[$i]);
         //                         }
         //                     }
@@ -326,7 +326,7 @@ class HomeController extends Controller
         //             foreach($step3[$pills->id] as $item_key => $item)
         //             {
         //                 $condition_id = ConditionQuestion::where('pill_question_id',$item)->pluck('id');
-                    
+
         //                 foreach($condition_id as $condition_key => $condition)
         //                 {
         //                     $condition_item_id = KnowledgeQuestion::where('condition_question_id',$condition)->inRandomOrder()
@@ -336,7 +336,7 @@ class HomeController extends Controller
         //                 }
         //             }
         //         }
-                
+
         //     }
             // $new_user_question = new UserQuestion([
             //     'user_id' => $user_items->id,
@@ -363,7 +363,7 @@ class HomeController extends Controller
         // {
         //     $step1_user = json_decode($user->step1);
         //     foreach($step1_user as $key => $value)
-        //     {   
+        //     {
         //         if ($key == 3) {
         //             $step1_ids[] = $value[0];
         //         }
@@ -794,12 +794,6 @@ class HomeController extends Controller
         // ->select('tg_cgrade.grade as grade','tg_cgrade.created_at as cat','tg_client.device as device','tg_cgrade')
         ->join('tg_client','tg_client.id','tg_cgrade.teacher_id')
         ->get();
-        // Birodar codes
-        #region Plan
-
-        $plan=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->exists();
-        $ps=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->with('planweek')->get();
-
         $knowledges = DB::table('tg_knowledge')->whereIn('step',[1,3])->get();
         $know_teachers = DB::table('tg_knowledge_grades')->distinct()->pluck('teacher_id');
         // return $know_teachers;
@@ -808,7 +802,7 @@ class HomeController extends Controller
         $step_array_counter = [];
         $step_array_grade_all = [];
         $step_array_step_all = [];
-        
+
         foreach($knowledges as $knowledge)
         {
             if($knowledge->step == 1){
@@ -858,7 +852,7 @@ class HomeController extends Controller
             if($knowledge->step == 3){
 
                 $condition_step = DB::table('tg_pill_questions')->where('knowledge_id',$knowledge->id)->get();
-                
+
                 foreach($condition_step as $key_con => $con)
                 {
             $pill_counter = 0;
@@ -877,7 +871,7 @@ class HomeController extends Controller
                 ->join('tg_pill_questions','tg_pill_questions.id','tg_condition_questions.pill_question_id')
                 ->avg('tg_knowledge_grades.grade');
 
-                
+
 
                 // if(count($step3_get) > 0)
                 // {
@@ -898,13 +892,13 @@ class HomeController extends Controller
                             }
                         }
                 }
-                        
+
                 }
 
-                
+
             }
-            
-            
+
+
         }
         $step3_get = DB::table('tg_knowledge_grades')
                 ->select('tg_knowledge_questions.name','tg_user.first_name','tg_user.last_name','tg_knowledge_grades.*')
@@ -920,7 +914,13 @@ class HomeController extends Controller
                 ->distinct()
                 ->get();
         // return $step_array_grade_all;
-        return view('welcome',compact('step_array_grade_all','step3_get','step3_get_user','step_array','pill_array','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
+
+        // Birodar codes
+        #region Plan
+
+        $plan=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->exists();
+        $ps=Plan::where('user_id',$id)->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->with('planweek')->get();
+
 
         $allplans=0;
         $allweekplan=[];
@@ -986,7 +986,10 @@ class HomeController extends Controller
         }
 
 //        dd($plan_product);
-        return view('welcome',compact('allweekplan','plan_product','numbers','allplans','ps','plan','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
+        return view('welcome',compact('allweekplan','plan_product','numbers','allplans','ps','plan','step_array_grade_all','step3_get','step3_get_user','step_array','pill_array','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
+
+//        return view('welcome',compact('step_array_grade_all','step3_get','step3_get_user','step_array','pill_array','medicineall','allquestion','devicegrade','allavg','d_for_user','d_array','altgardes','quearray','elchi','medic','cateory','category','sum','dateText'));
+
 
     }
     public function elchiList()
