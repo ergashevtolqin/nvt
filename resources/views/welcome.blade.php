@@ -27,9 +27,6 @@
        </div>
       </div>
 
-
-
-
 <div class="content headbot">
     <div class="row">
        <div class="col-12 col-xl-4 d-flex flex-wrap">
@@ -45,6 +42,7 @@
                         <h5> <a href="{{route('plan.show',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Planni Ko'rish</a> </h5>
                     @else
                         <h5> <a href="{{route('plan',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Plan Qo'shish</a> </h5>
+
 
                     @endif
                 </div>
@@ -97,7 +95,7 @@
     </div>
 
 
-    {{-- <div class="row d-flex justify-content-between p-5"  id="catid">
+     <div class="row d-flex justify-content-between p-5"  id="catid">
                 @if($plan)
                     @php $t=0;  @endphp
 
@@ -125,14 +123,14 @@
                 @php $t++; @endphp
             @endforeach
         @endif
-    </div> --}}
+    </div>
 
 
 
 
 
 
-    {{-- <div class="row d-flex justify-content-between p-2">
+     <div class="row d-flex justify-content-between p-2">
         @if($plan)
 
             <table class="table table-striped plan">
@@ -163,7 +161,7 @@
                 </tbody>
             </table>
         @endif
-    </div> --}}
+    </div>
     <div class="row" id="forcollapsegrade" style="display: none;">
       <div class="col-12 col-md-12 col-lg-12 d-flex flex-wrap">
             <div class="card bg-white">

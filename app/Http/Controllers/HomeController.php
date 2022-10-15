@@ -1095,7 +1095,6 @@ class HomeController extends Controller
         $pr = count($all_date)+$sunday;
         // return $date;
         $elchi_work[$elch->id] = ($cale->work_day+$sunday).'/'.(count($date)).'/'.$pr;
-
                 $user = DB::table('tg_productssold')
                 ->selectRaw('SUM(tg_productssold.number * tg_medicine.price) as allprice,SUM(tg_productssold.number) as allnumber,tg_medicine.name,tg_medicine.price')
                 ->whereIn(DB::raw('DATE(tg_productssold.created_at)'), $date)
