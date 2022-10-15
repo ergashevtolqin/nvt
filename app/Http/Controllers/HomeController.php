@@ -972,16 +972,15 @@ class HomeController extends Controller
         $plan_product = [];
         foreach ($ps as $p){
 //            dd($p);
-            foreach ($p->planweek as $pw){
+            foreach ($p->planweek as $pw) {
 //                dd($pw);
-                $count= ProductSold::where('user_id',$id)
-                    ->where('medicine_id',$p->medicine_id)
+                $count = ProductSold::where('user_id', $id)
+                    ->where('medicine_id', $p->medicine_id)
                     ->whereBetween('created_at', [$pw->startday, $pw->endday])->sum('number');
-                $name = DB::table('tg_medicine')->where('id',$p->medicine_id)->value('name');
-                if($count != 0)
-                {
-                    $plan_product[] = array('plan' => $pw->plan,'count' => $count,'name' => $name ,'begin' => $pw->startday, 'end' => $pw->endday );
-                }
+                $name = DB::table('tg_medicine')->where('id', $p->medicine_id)->value('name');
+//                if ($count!=0){
+                $plan_product[] = array('plan' => $pw->plan, 'count' => $count, 'name' => $name, 'begin' => $pw->startday, 'end' => $pw->endday);
+//            }
             }
         }
 

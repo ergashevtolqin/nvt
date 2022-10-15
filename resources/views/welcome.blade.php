@@ -111,9 +111,9 @@
                         </h2>
                         <h1 style="color:#ffffff;text-align:center;margin-left:0px;">
                             <span title="5.203.100">
-                                <span class="numberkm">{{substr($pw->startday,8)}}</span>
-                                <span style="width: 2px; height: 15px;"><img style="color: white; height: 15px; width: 40px;" src="{{asset('assets/img/transparent-bg-designify.png')}}"></span>
-                                <span class="numberkm">{{substr($pw->endday,8)}}</span>
+                                <span style="font-size: 15px" class="numberkm">{{substr($pw->startday,5)}}</span>
+                                <span style="width: 4px; height: 20px; margin-top: 2px"><img style="color: white; margin-top: 10px; height: 25px; width: 60px;" src="{{asset('assets/img/whiteArrow.png')}}"></span>
+                                <span style="font-size: 15px" class="numberkm">{{substr($pw->endday,5)}}</span>
                             </span>
                         </h1>
 
@@ -131,7 +131,7 @@
 
 
 
-     <div class="row d-flex justify-content-between p-2">
+     <div id="maindata1" class="row d-flex justify-content-between p-2">
         @if($plan)
 
             <table class="table table-striped plan">
@@ -576,6 +576,7 @@
            $('.alldatebegin').css('display','none');
            $(`.plan${id}`).css('display','');
            $(`.plan`).css('display','');
+
 
        }
 
