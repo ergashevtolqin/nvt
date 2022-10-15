@@ -52,6 +52,8 @@ class PlanService
                     $cf=0;
                     $l=$pw->workday;
                     for($j=$start;$j<$start+$l;$j++){
+
+                        
                         if($arr[$j]=='true'){
                             $ct++;
                         }else{
