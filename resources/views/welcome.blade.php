@@ -39,7 +39,8 @@
                    <h5> <button type="button" class="btn btn-info" onclick="collapseGrade2()">Tashqi reyting {{number_format($altgardes,2)}}</button> </h5>
                      @if($plan)
                         <h5> <a href="{{route('plan.edit',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Planni Tahrirlash</a> </h5>
-                        <h5> <a href="{{route('plan.show',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Planni Ko'rish</a> </h5>
+                        <h5> <a onclick="show_weeks()"  type="button" class="open-plan text-white btn btn-info" >Planni Ko'rish</a> </h5>
+                        <h5> <a onclick="close_weeks()" type="button" style="display: none" class="close-plan text-white btn btn-info" >Planni Ko'rish</a> </h5>
                     @else
                         <h5> <a href="{{route('plan',['id'=>$elchi->id])}}" type="button" class="btn btn-info" >Plan Qo'shish</a> </h5>
 
@@ -101,8 +102,8 @@
 
                     @foreach($ps[0]->planweek as $pw)
 
-        <div onclick="show_week(`{{substr($pw->startday,8)}}`)" class="container btn col-12 col-md-6 col-lg-3 d-flex flex-wrap delcat">
-            <div style="border-radius:26px;" class="card detail-box13">
+        <div style="display: none" onclick="show_week(`{{substr($pw->startday,8)}}`)" class="table-plans container btn col-12 col-md-6 col-lg-3 d-flex flex-wrap delcat">
+            <div style="display: none" style="border-radius:26px;" class="card table-plans detail-box13">
                 <div class="card-body"><div class="dash-contetnt">
                         <h2 style="color:#ffffff;text-align:center;font-size:20px;font-family:Gilroy;">
                             <span>{{$numbers[$t]}}</span>/
@@ -555,6 +556,21 @@
 @section('admin_script')
    <script>
 
+       function show_weeks(id)
+       {
+           $('.open-plan').css('display','none');
+           $(`.close-plan`).css('display','');
+           $(`.table-plans`).css('display','');
+
+       }
+       function close_weeks(id)
+       {
+           $('.open-plan').css('display','');
+           $(`.close-plan`).css('display','none');
+           $(`.table-plans`).css('display','none');
+           $(`.plan`).css('display','none');
+
+       }
        function show_week(id)
        {
            $('.alldatebegin').css('display','none');
